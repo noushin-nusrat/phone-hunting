@@ -7,6 +7,7 @@ const loadPhone = async (searchText = '13', isShowAll) => {
 }
 
 
+
 const displayPhones = (phones, isShowAll) => {
     // console.log(phones);
 
@@ -37,12 +38,13 @@ const displayPhones = (phones, isShowAll) => {
         phoneCard.classList = `card p-4 bg-gray-100 shadow-xl`;
         // 3. set inner html text
         phoneCard.innerHTML = `
-     <figure><img src="${phone.image}" alt="Shoes" />
+     <figure><img src="${phone.image}" alt="phone" />
       </figure>
      <div class="card-body">
             <h2 class="card-title">${phone.phone_name}</h2>
-            <p>If a dog chews shoes whose shoes does he choose?</p>
+            <p>There are many variations of passages of available, <br> but the majority have suffered</p>
         <div class="card-actions justify-center">
+        <p class="text-xl font-bold">$225</p>
         <button onclick="handleShowDetail('${phone.slug}')" class="btn btn-primary">Show Details</button>
         </div>
      </div>`;
@@ -113,4 +115,7 @@ const handleShowAll = () => {
     handleSearch(true)
 }
 
+
 loadPhone();
+
+

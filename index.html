@@ -11,17 +11,26 @@
 </head>
 
 <body>
-
-    <!-- Navbar -->
-    <header class="bg-blue-500 p-4">
-        <nav class="container mx-auto flex justify-between items-center">
+    <!-- <nav class="container mx-auto flex justify-between items-center">
             <h1 class="text-white text-2xl font-bold">Phone Hunter</h1>
             <div>
                 <input id="search-field" type="text" placeholder="Search here" class="input input-bordered" />
-                <button onclick="handleSearch()" class="btn btn-accent mt-6">Search</button>
+                <button onclick="handleSearch()" class="btn btn-accent mt-2">Search</button>
+            </div>
+        </nav> -->
+    <header class="bg-blue-500 p-4">
+        <nav class="container mx-auto flex justify-between items-center">
+            <h1 class="text-white text-2xl font-bold">Phone Hunter</h1>
+            <div class="flex items-center space-x-4">
+                <input id="search-field" type="text" placeholder="Search here" class="input input-bordered" />
+                <button onclick="handleSearch()" class="btn btn-accent">Search</button>-
             </div>
         </nav>
     </header>
+
+    </header>
+
+
 
     <main class="container mx-auto">
         <!-- <section class="bg-gray-100 p-4 m-4">
@@ -33,11 +42,11 @@
         <!-- search result -->
         <section>
             <!-- spinner or loader -->
-            <div class="text-center my-48 hidden" id="loading-spinner">
-                <span class="loading loading-spinner loading-lg text-[#00BBA6]"></span>
+            <div class="text-center my-48 hidden" id="loading-spinner"><span
+                    class="loading loading-spinner loading-lg text-[#00BBA6]"></span>
             </div>
+            <!-- Phone cards will be displayed here -->
             <div id="phone-container" class=" grid grid-cols grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <!-- Phone cards will be displayed here -->
             </div>
             <!-- show all button -->
             <div id="show-all-container" class="hidden text-center my-8">
@@ -53,7 +62,6 @@
                 <div id="show-detail-container"></div>
                 <div class="modal-action">
                     <form method="dialog">
-                        <!-- if there is a button in form, it will close the modal -->
                         <button class="btn">Close</button>
                     </form>
                 </div>
@@ -61,11 +69,16 @@
         </dialog>
 
     </main>
-    <footer class="bg-gray-800 text-white py-4">
+    <footer class="bg-gray-800 text-white py-8">
         <div class="container mx-auto text-center">
+            <h3 class="text-2xl font-bold mb-4">Phone Hunter</h3>
+            <p class="text-lg text-gray-400 mb-6">Phone Hunter is your ultimate destination for finding the best
+                deals
+                on smartphones from around the world.</p>
             <p>&copy; 2024 Phone Hunter. All rights reserved.</p>
         </div>
     </footer>
+
     <script src="js/phone.js"></script>
 </body>
 
