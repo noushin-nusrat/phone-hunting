@@ -1,121 +1,143 @@
-const loadPhone = async (searchText = '13', isShowAll) => {
-    const res = await fetch(`https://openapi.programming-hero.com/api/phones?search=${searchText}`);
+const loadPhones = async () => {
+    const res = await fetch('https://openapi.programming-hero.com/api/phones?search=iphone')
     const data = await res.json();
-    const phones = data.data
-    // console.log(phones);
-    displayPhones(phones, isShowAll);
+    const phones = data.data; 
+    
+    displayPhones(phones)
+    // console.log(`https://openapi.programming-hero.com/api/phones?search=iphone`)
 }
 
+const searchPhones = async (searchValue, isViewAll) => {
+    const res = await fetch(`https://openapi.programming-hero.com/api/phones?search=${searchValue}`)
+    const data = await res.json();
+    const phones = data.data; 
+    displayPhones(phones, isViewAll)
 
+    // console.log(`https://openapi.programming-hero.com/api/phones?search=${searchValue}`)
+}
 
-const displayPhones = (phones, isShowAll) => {
-    // console.log(phones);
-
+const displayPhones = (phones, isViewAll) => {
     const phoneContainer = document.getElementById('phone-container');
-    //clear phone container cards before adding new cards
-    phoneContainer.textContent = '';
 
-    //display show all button if there are more than 12 phones
-    const showAllContainer = document.getElementById('show-all-container');
-    if (phones.length > 12 && !isShowAll) {
-        showAllContainer.classList.remove('hidden')
-    }
-    else {
-        showAllContainer.classList.add('hidden')
-    }
-    // console.log('is show all', isShowAll);
+    
+    phoneContainer.innerHTML = "";
 
-    //display only first 12 phones if not show all
-    if (!isShowAll) {
-        phones = phones.slice(0, 12);
+    // console.log(phones.length)  
+    // console.log('is show all', isViewAll)
+
+    if(phones.length >= 9 ){
+        viewAllBtn.classList.remove('hidden')
+    }
+    else{
+        viewAllBtn.classList.add('hidden')
     }
 
+    // slice result if showall is not true
+    if(!isViewAll){
+        phones = phones.slice(0, 9)
+    }
+    
+    // empty search
+    
 
-    phones.forEach(phone => {
-        // console.log(phone);
-        // 2. create a div
-        const phoneCard = document.createElement('div');
-        phoneCard.classList = `card p-4 bg-gray-100 shadow-xl`;
-        // 3. set inner html text
-        phoneCard.innerHTML = `
-     <figure><img src="${phone.image}" alt="phone" />
-      </figure>
-     <div class="card-body">
-            <h2 class="card-title">${phone.phone_name}</h2>
-            <p>There are many variations of passages of available, <br> but the majority have suffered</p>
-        <div class="card-actions justify-center">
-        <p class="text-xl font-bold">$225</p>
-        <button onclick="handleShowDetail('${phone.slug}')" class="btn btn-primary">Show Details</button>
+    phones.forEach(phones => {
+        // add the new div
+        const div = document.createElement('div');
+        div.classList = `border-2 box-border p-4 rounded-lg space-y-2 mx-3`;
+        div.innerHTML = 
+        `<div class="bg-[#0D6EFD0D] py-10 rounded-lg">
+            <img src="${phones.image}" alt="" class="mx-auto">
         </div>
-     </div>`;
-        // 4. append child
-        phoneContainer.appendChild(phoneCard);
+
+        <div class="flex flex-col space-y-2 text-center items-center">
+            <h1 class="text-2xl font-bold">${phones.phone_name}</h1>
+            <p class="text-lg text-gray-600">${phones.slug}</p>
+            <p class="text-2xl font-bold">$<span>${phones.brand}</span></p>
+            <button class="btn bg-[var(--blue)] text-white hover:text-black hover:border-[var(--blue)] text-lg md:text-xl px-5 md:px-10 py-0 md:py-1 font-bold box-content w-fit" onclick="showDetails('${phones.slug}')">Show Details</button>
+
+        </div>
+        `;
+        phoneContainer.appendChild(div);
+
     });
 
-    //hide loading container
-    toggleLoadingSpinner(false);
+   toggleLoader(false);
 }
 
-//
-const handleShowDetail = async (id) => {
-    // console.log('click', id);
-    //load single phone data
+// search handle
+const searchHandle = (isViewAll) => {
+    toggleLoader(true);
+    const searchInput =document.getElementById('search-input');
+    const searchValue = searchInput.value;
+    searchPhones(searchValue, isViewAll);
+    // console.log(searchValue)
+    if(searchValue === ""){
+        loadPhones();
+    }
+
+    
+}
+
+// view all handle
+const viewAllBtn = document.getElementById('view-all-btn');
+viewAllBtn.onclick = function(isViewAll, searchValue){
+    searchHandle(true);
+}
+
+// show/hide loader
+const toggleLoader = (isLoading) =>{
+    const loader = document.getElementById('loader');
+    if(isLoading){
+        loader.classList.remove('hidden');
+    }
+    else{
+        loader.classList.add('hidden');
+    }
+}
+
+// Show details
+const showDetails = async (id) => {
+    // console.log('clicked', id);
     const res = await fetch(`https://openapi.programming-hero.com/api/phone/${id}`);
     const data = await res.json();
-    const phone = data.data;
-    showPhoneDetails(phone);
+    const detailsData = data.data;
+    showModal(detailsData);
 }
 
-const showPhoneDetails = (phone) => {
-    console.log(phone);
-    const phoneName = document.getElementById('show-detail-phone-name');
-    phoneName.innerText = phone.name;
-
-    //
-    const showDetailContainer = document.getElementById('show-detail-container');
-    showDetailContainer.innerHTML = `
-    <img src="${phone.image}" alt="">
-    <p><span>Storage:</span>${phone?.mainFeatures?.storage}</p>
-    <p><span>Display Size:</span>${phone?.mainFeatures?.displaySize}</p>
-    <p><span>Chipset:</span>${phone?.mainFeatures?.chipSet}</p>
-    <p><span>Memory:</span>${phone?.mainFeatures?.memory}</p>
-    <p><span>Slug:</span>${phone?.slug}</p>
-    <p><span>Release Date:</span>${phone?.releaseDate}</p>
-    <p><span>Brand:</span>${phone?.brand}</p>
-    <p><span>GPS:</span>${phone?.others?.GPS || 'No GPS'}</p>
-    `
-
-    //show the modal
+// modal display
+const showModal = (phone) => {
     show_details_modal.showModal();
-}
-
-
-
-//handle search button
-const handleSearch = (isShowAll) => {
-    toggleLoadingSpinner(true);
-    const searchField = document.getElementById('search-field');
-    const searchText = searchField.value;
-    console.log(searchText);
-    loadPhone(searchText, isShowAll);
-}
-
-const toggleLoadingSpinner = (isLoading) => {
-    const loadingSpinner = document.getElementById('loading-spinner');
-    if (isLoading) {
-        loadingSpinner.classList.remove('hidden')
+    const sensors = phone.mainFeatures.sensors;
+    const sensorArray = []
+    for (const sensor of sensors){
+        sensorArray.push(sensor)
     }
-    else {
-        loadingSpinner.classList.add('hidden')
-    }
+    // console.log(sensorArray)
+
+    const phoneDetailsCOntainer = document.getElementById('phone-details-container');
+    
+
+    phoneDetailsCOntainer.innerHTML = 
+    `<div class="flex justify-center">
+        <img src="${phone.image}" alt="">
+    </div>
+    <div class="details space-y-3 my-5">
+        <h3 class="text-xl md:text-2xl font-bold">${phone.name}</h3>
+        <p>Description</p>
+        <p><span class="font-bold">Storage: </span> ${phone.mainFeatures.storage} </p>
+        <p><span class="font-bold">Display Size: </span> ${phone.mainFeatures.displaySize} </p>
+        <p><span class="font-bold">Memory: </span> ${phone.mainFeatures.memory} </p>
+        <p><span class="font-bold">Sensors: </span> ${sensorArray} </p>
+        <p><span class="font-bold">Release Date: </span> ${phone?.releaseDate ? phone.releaseDate : "No information found"} </p>
+        <p><span class="font-bold">Wlan: </span> ${phone.others?.WLAN ? phone.others?.WLAN :"No information found"} </p>
+        <p><span class="font-bold">Bluetooth: </span> ${phone.others?.Bluetooth ? phone.others.Bluetooth : "No information found"} </p>
+        <p><span class="font-bold">GPS: </span> ${phone.others?.GPS ? phone.others.GPS : "No information found"} </p>
+        <p><span class="font-bold">NFC: </span> ${phone.others?.NFC ? phone.others.NFC : "No information found"} </p>
+        <p><span class="font-bold">Radio: </span> ${phone.others?.Radio ? phone.others.Radio : "No information found"} </p>
+        <p><span class="font-bold">USB: </span> ${phone.others?.USB ? phone .others.USB : "No information found"} </p>
+
+    </div>`
+
 }
 
-//handle show all
-const handleShowAll = () => {
-    handleSearch(true)
-}
-
-
-loadPhone();
-
-
+loadPhones();
